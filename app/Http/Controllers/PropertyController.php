@@ -110,4 +110,46 @@ class PropertyController extends Controller
         return PropertyResource::collection($properties);
     }
 
+    // 7. LIKE A PROPERTY
+    public function like(Request $request, Property $property)
+    {
+        $property->like($request->userid);
+        return ([
+            "message" => "1 count of like has been added to " . $property->name,
+            "current_total_likes" => $property->likeCount
+        ]);
+    }
+
+    // 8.  UNLIKE A PROPERTY
+    public function unlike (Request $request, Property $property) 
+    {
+        $property->unlike($request->userid);
+        return ([
+            "message" => $property->name . " has been unlike",
+            "current_total_likes" => $property->likeCount
+        ]);
+    }
+
+    // 9. GET COUNT OF LIKES
+    public function likescount (Property $property)
+    {
+        return ([
+            "count" => $property->likeCount,
+            "property_name" => $property->name
+        ]);
+    }
+
+    // 10. RETRIEVE LIKES INFO OF A PROPERTY
+    public function likesinfo (Property $property) 
+    {
+        return $property->likes;
+    }
+
+    public function checklike (Property $property, Request $request)
+    {
+        return $property->liked($request->userid);
+    }
+
+
+
 }

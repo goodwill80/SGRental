@@ -6,24 +6,72 @@ import Spinner from './Images/spinner.gif'
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { FaThumbsUp } from "react-icons/fa";
+import useToogle from '@/Context/Toggle'
 
 function Property() {
   
     const { id } = useParams();
     const redirect = useNavigate();
-    const { property, setSingleProperty } = useContext(PropertyContext)
-    const [ loggedUserId, setLoggedUserId ] = useState()
+    const { property, setSingleProperty, retrieveLikes, likes, setLikes, setLoggedUserId, loggedUserId } = useContext(PropertyContext)
+    const [ likesinfo, setLikesinfo ] = useState([]);
+    const [ likeOrUnlike, setLikeOrUnlike ] = useState(false);
 
 
+    const updateLikes = ()=> {
+        if(loggedUserId) {
+            const findLikes = likesinfo.find(item=> item.user_id == loggedUserId);
+            if(findLikes) {
+                unlikeProperty(loggedUserId, id)
+            } 
+            if(!findLikes) {
+                likeProperty(loggedUserId, id)
+            }
+        }
+    }
+
+    // API - GET USER ID
     const get_logged_userId = ()=> {
         axios.get('/api/user')
             .then(res=>{
-                console.log(res.data)
+                // console.log(res.data)
                 setLoggedUserId(res.data.id)
             })
             .catch(err=>console.log(err))
     }
 
+    // API - GET LIKES INFO
+    const getLikesSummary = ()=> {
+        axios.get(`/api/property/likesinfo/${id}`)
+            .then(res=> setLikesinfo(res.data))
+            .catch(err=>console.log(err))
+    }
+
+  
+    // API - LIKE
+    const likeProperty = (userId, propId)=> {
+        if(loggedUserId) {
+            axios.post(`/api/property/like/${propId}?userId=${userId}`)
+            .then(res=>{
+                setLikes(1);
+            })
+        }
+    }
+
+    // API - UNLIKE
+    const unlikeProperty = (userId, propId)=> {
+        if(loggedUserId) {
+            axios.post(`/api/property/unlike/${propId}?userId=${userId}`)
+            .then(res=>{
+                setLikes(0);
+            })
+        }
+    }
+
+    useEffect(()=> {
+        retrieveLikes(id);
+        getLikesSummary();
+    }, [likes])
+    
     useEffect(()=> {
         get_logged_userId();
         axios.get(`/api/properties/${id}`)
@@ -104,14 +152,18 @@ function Property() {
                 <h1 className="text-sm text-blue-800 border-solid border-2 border-blue-300 p-1 px-2 rounded-md">
                     {property.room_category.name}
                 </h1>
-                <h1 className="text-sm flex items-center justify-center space-x-3 text-green-800 w-[80px] border-solid border-2 border-green-300 p-1 px-2 rounded-md">
-                    <FaThumbsUp />
-                    <h1 className="ml-2">{property.ratings}</h1>
+                <h1 className="text-sm flex items-center justify-center space-x-3 text-green-700 hover:text-green-900 w-[80px] border-solid border-2 border-green-300 p-1 px-2 rounded-md">
+                    <button onClick={()=>unlikeProperty(loggedUserId, id)}>
+                        <FaThumbsUp />
+                    </button>
+                    <p className="ml-2">{likes}</p>
                 </h1>
             </div>
             <div className="flex justify-center items-center space-x-1">
-            <button className="btn btn-info text-white btn-sm">Share</button>
-                <button className="btn btn-success text-white btn-sm">Like</button>
+                <button className="btn btn-success text-white btn-sm">Share</button>
+                <button onClick={()=>likeProperty(loggedUserId, id)} className="btn btn-success text-white btn-sm">
+                    Like
+                </button>
                 <a href="#contact">
                     <button className="btn btn-error text-white btn-sm">Contact</button>
                 </a>

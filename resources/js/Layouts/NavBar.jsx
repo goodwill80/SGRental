@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 
 function NavBar() {
 
-  const { cookie, removeCookie } = useContext(PropertyContext);
+  const { cookie, removeCookie, setLoggedUserId } = useContext(PropertyContext);
   const [ id, setId] = useState();
   
 
@@ -29,6 +29,7 @@ function NavBar() {
           icon: 'Success',
           title: `Successfully logged out`
         })
+        setLoggedUserId('');
         redirect('/login');
       })
       .catch(err => console.log(err))
@@ -60,7 +61,7 @@ function NavBar() {
           {/* Left Links */}
           <div>
             <Link to='/' className="btn btn-ghost normal-case text-xl">RentSG</Link>
-            <ul className="hidden lg:flex p-2 gap-4">
+            <ul className="lg:flex p-2 gap-4">
                {/* <li><Link to="about">About</Link></li> */}
                <li><Link to="properties">Search for Rentals</Link></li>
                {/* <li><Link to="contact">Contact Us</Link></li> */}

@@ -30,7 +30,7 @@ const retrieveProperties = ()=> {
     .catch(error=> console.log(error))
 }
 
-console.log(properties)
+// console.log(properties)
 
 // Retrieve categories of housing
 const retrieveCategories = ()=> {

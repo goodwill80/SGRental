@@ -31,7 +31,11 @@ Route::get('category', [PropertyController::class, 'category']); // Specific cat
 Route::get('properties/{id}', [PropertyController::class, 'show']); // Single Property
 
 // USER LIKES
-Route::put('property/likes/{id}', [PropertyController::class, 'like']);
+Route::post('property/like/{property}', [PropertyController::class, 'like']);
+Route::post('property/unlike/{property}', [PropertyController::class, 'unlike']);
+Route::get('property/likescount/{property}', [PropertyController::class, 'likescount']);
+Route::get('property/likesinfo/{property}', [PropertyController::class, 'likesinfo']);
+Route::get('property/checklike/{property}', [PropertyController::class, 'checklike']);
 
 // GET USER PROPERTIES
 Route::get('user/properties', [PropertyController::class, 'userProps']);

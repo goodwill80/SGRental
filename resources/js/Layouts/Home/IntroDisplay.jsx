@@ -34,7 +34,7 @@ function IntroDisplay() {
   return (
     <div className="px-16 my-8 min-w-full">
       <h1 className="text-2xl font-bold mb-4">Latest Properties </h1>
-      <div className="flex flex-row justify-center items-center space-x-10">
+      <div className="flex flex-col md:flex-row justify-center items-end pl-8 md:pl-1 space-x-10">
        { images.map((image, index)=> (
             <ImageContainer
                 key={ index }
